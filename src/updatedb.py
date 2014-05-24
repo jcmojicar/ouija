@@ -91,13 +91,19 @@ def parseBuilder(buildername, branch):
     return platform, buildtype, testtype
 
 def clearResults(branch, startdate):
+
+    date_183_days_ago = datetime.date.today() - datetime.timedelta(days=183)
+    delete_183_days_older = 'delete from testjobs where branch="%s" and date < "%04d-%02d-%02d"' % (branch, date_183_days_ago.year, date_183_days_ago.month, date_183_days_ago.day)
+    delete_delta_days = 'delete from testjobs where branch="%s" and date >= "%04d-%02d-%02d"' % (branch, startdate.year, startdate.month, startdate.day)
+
     db = MySQLdb.connect(host="localhost",
                          user="root",
                          passwd="root",
                          db="ouija")
 
     cur = db.cursor()
-    cur.execute('delete from testjobs where branch="%s" and date >= "%04d-%02d-%02d"' % (branch, startdate.year, startdate.month, startdate.day)) 
+    cur.execute(delete_183_days_older)
+    cur.execute(delete_delta_days)
     cur.close()
 
 def uploadResults(data, branch, revision, date):
