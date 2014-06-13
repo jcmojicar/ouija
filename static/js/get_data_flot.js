@@ -12,6 +12,7 @@ function getData(platforms) {
             data_platform = data;
         }
     });
+    console.log(data_platform);
     return data_platform;
 }
 
