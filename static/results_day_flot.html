@@ -6,35 +6,41 @@
    <link rel="stylesheet" type="text/css" href="/css/style.css">
    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-   <!-- <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script> -->
-   <script src="/js/datepicker.js"></script>
    <script src="js/flot/jquery.flot.min.js"></script>
    <script src="js/flot/jquery.flot.time.min.js"></script>
    <script src="js/flot/jquery.flot.selection.min.js"></script>
+   <script src="/js/datepicker.js"></script>
    <script src="js/get_data_flot.js"></script>
    <script src="js/plotGraph.js"></script>
    <script type="text/javascript">
+    $(function() {
+         $('form').submit( function(e) {
+             e.preventDefault();
+             var data_platform = getData();
+             setTimeout(function() {
+                 // getDataSets function is included in get_data_flot.js file. Gets the data in the format required by flot.
+                 datasets = getDataSets(data_platform);
+
+                 //plotGraph function is included in the plotGraph.js file.
+                 plotGraph(datasets, data_platform);
+             },500);
+         });
+    });
 
     // getData is a function defined in get_data_flot.js. It sends a get request to the python webserver to get data for all platforms
     var data_platform = getData();
-    console.log("JCMR: data_platform");
-    console.log(data_platform);
-    console.log(JSON.stringify(data_platform));
     var datasets = {};
 
     // Probably there is a better way to do this without using setTimeout. Though I am doing every get request synchronously,somehow the graph is not getting plotted if I don't use setTimeout. Should figure out the problem and do it in a better way without using setTimeout.
     setTimeout(function() {
       // getDataSets function is included in get_data_flot.js file. Gets the data in the format required by flot.
       datasets = getDataSets(data_platform);
-      console.log("JCMR: datasets");
-      console.log(JSON.stringify(datasets));
 
-      // plotGraph function is included in the plotGraph.js file.
+      //plotGraph function is included in the plotGraph.js file.
       plotGraph(datasets, data_platform);
     },500);
 
-    </script>
-
+   </script>
 </head>
 <body>
     <div id="pageHeader">
